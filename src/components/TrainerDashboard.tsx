@@ -25,7 +25,7 @@ export function TrainerDashboard({ defaultView = 'calendar' }: TrainerDashboardP
   const menuItems = [
     {
       icon: <Users className="w-5 h-5 min-w-[20px]" />,
-      label: 'Клиентосы',
+      label: 'Клиенты',
       onClick: () => {
         setActiveView('clients');
         navigate('/trainer/clients');
