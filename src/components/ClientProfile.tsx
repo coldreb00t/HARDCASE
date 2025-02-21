@@ -7,7 +7,10 @@ import {
   Users,
   Apple,
   Activity,
-  LineChart
+  LineChart,
+  Edit2,
+  Trash2,
+  Plus
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
@@ -100,6 +103,32 @@ export function ClientProfile() {
     }
   };
 
+  const handleDeleteProgram = async (programId: string) => {
+    if (!window.confirm('Вы уверены, что хотите удалить эту программу?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('training_programs')
+        .delete()
+        .eq('id', programId);
+
+      if (error) throw error;
+
+      toast.success('Программа удалена');
+      fetchClientData();
+    } catch (error: any) {
+      console.error('Error deleting program:', error);
+      toast.error('Ошибка при удалении программы');
+    }
+  };
+
+  const handleEditProgram = (program: Program) => {
+    setEditingProgram(program);
+    setShowProgramBuilder(true);
+  };
+
   const menuItems = [
     {
       icon: <Users className="w-5 h-5 min-w-[20px]" />,
@@ -143,6 +172,7 @@ export function ClientProfile() {
                 }}
                 className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
               >
+                <Plus className="w-5 h-5 mr-2 inline-block" />
                 Создать программу
               </button>
             </div>
@@ -180,6 +210,22 @@ export function ClientProfile() {
                               {program.status === 'active' ? 'Активна' : 'Завершена'}
                             </span>
                           </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEditProgram(program)}
+                            className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                            title="Редактировать программу"
+                          >
+                            <Edit2 className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProgram(program.id)}
+                            className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Удалить программу"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
                         </div>
                       </div>
 
